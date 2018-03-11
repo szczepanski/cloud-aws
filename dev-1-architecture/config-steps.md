@@ -1,7 +1,7 @@
 
 
 #  Top layer architecture 
-Inline-style: 
+
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png "Logo Title Text 1")
 
 
