@@ -85,7 +85,7 @@ Always go for least previlleged access method.
 12. Create a role with no permissions as these will be established and added later. 
 Name it Dev-1EC2-Role
 
-# EC2 Set Up 
+## EC2 Set Up 
 
 13. Launch new instance - EC2-Dev-1
 - Amazon Linux
@@ -126,6 +126,7 @@ cd /var/www/html
 echo "Piotr Testing Page" > index.html
 ``` 
 
+## S3 config
 
 
 
