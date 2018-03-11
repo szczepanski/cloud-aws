@@ -107,6 +107,26 @@ Name it Dev-1EC2-Role
 Leave SSH port open to single - own IP - for testing 
 - Add Rule - HTTP 0.0.0.0/0 
 - create and save new Key Pair - Dev-1-KeyPair.pem
+when testing ssh - ensure pem lsfile permissions are set to min 400
+
+## ssh testing
+ssh -i /KeyPair/file/location.pem  ec2-user@x.x.x.x
+
+## initila server setup / patch
+sudo yum update -y  [option -y => promptless]
+sudo yum install -y httpd php
+sudo service httpd startig
+
+## verify http appache server 
+browser or curl to server public IP
+
+## amend landig page
+```shell 
+cd /var/www/html
+echo "Piotr Testing Page" > index.html
+``` 
+
+
 
 
 
