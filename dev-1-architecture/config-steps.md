@@ -1,7 +1,10 @@
 
 
 #  Top layer architecture 
+Inline-style: 
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")cloud-aws/dev-1-architecture/architecture design.png
 
+https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png
 
 - Region - geographic
 - VPC - private IP space 
@@ -33,5 +36,7 @@ VLSM / CIDR Subnet calculator
 2. Vpc->create Vpc [specify name and CIDR range with subnet mask, no dedicated Tenancy]
 192.160.0.0/19
 3. Set Up 6 Subnets to override the 3 default subnets - size 256 hosts each 
+
+# Route table and Gateway 
 
  
