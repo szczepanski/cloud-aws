@@ -110,9 +110,10 @@ Leave SSH port open to single - own IP - for testing
 when testing ssh - ensure pem lsfile permissions are set to min 400
 
 ## ssh testing
-ssh -i /KeyPair/file/location.pem  ec2-user@x.x.x.x
+14. ssh -i /KeyPair/file/location.pem  ec2-user@x.x.x.x
 
 ## initila server setup / patch
+15. 
 sudo yum update -y  [option -y => promptless]
 sudo yum install -y httpd php
 sudo service httpd startig
@@ -120,14 +121,41 @@ sudo service httpd startig
 ## verify http appache server 
 browser or curl to server public IP
 
-## amend landig page
+## amend landig page - optional
 ```shell 
 cd /var/www/html
 echo "Piotr Testing Page" > index.html
 ``` 
 
-## S3 config
+## S3 configuration
 
+16. configure standard S3 bucket, add new folder => builds and upload 
+sample page / application  
+
+## IAM Role adjustment
+17. Create policy 
+IAM>Roles>Dev-1-EC2-role> Add inline policy>JSON Tab
+For assistance:
+https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html
+```JSON
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "dev1s3accesspolicy",
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::piotr.szczepanski/Dev-1/*",
+                "arn:aws:s3:::piotr.szczepanski/Dev-1"
+            ]
+        }
+    ]
+}
+```
+##
 
 
 
