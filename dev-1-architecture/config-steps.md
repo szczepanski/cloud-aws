@@ -2,9 +2,8 @@
 
 #  Top layer architecture 
 Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")cloud-aws/dev-1-architecture/architecture design.png
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png "Logo Title Text 1")
 
-https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png
 
 - Region - geographic
 - VPC - private IP space 
