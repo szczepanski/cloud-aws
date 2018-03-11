@@ -1,5 +1,20 @@
-Top layer architecture 
 
+```yaml
+- hosts: localhost #  tasks to be run on local machine
+  name: Create infrastructure on AWS #for information only  
+  connection: local # do not connect anywhere 
+  gather_facts: False # when enabled ansible can extract variables and facts such as os version or interface details
+  vars: # here server count var is hardcoded to 1
+    server_count: 1
+    ```
+    ```javascript
+    if(ckk) {
+    bla
+    }
+    ```
+
+# Top layer architecture 
+## sample
 - Region - geographic
 - VPC - private IP space 
 - two availability zones - resilence
