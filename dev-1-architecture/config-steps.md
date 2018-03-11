@@ -66,9 +66,30 @@ select public subnet 2 and allocate new EIP - elastic IP - NAT GW 2
 
 ## Enable Auto Assign Public IP on subnets
 
-Public IPs are required for application servers to be available over the internet
+Public IPs are required for application servers to be available over the internet. 
 
+11. VPC/Subnets section 
+- select Public Subnet 1 > modyfiy auto assign IP setting (subnet actions) => tick enable
+- select Public Subnet 2 > modyfiy auto assign IP setting (subnet actions) => tick enable
 
+# EC2 Set Up 
+
+Launch new instance
+EC2-Dev-1
+- Amazon Linux
+- t2 micro
+- change network to VPC-Dev-1 
+- select Public Subnet 1 (app server available in public domain) 
+- ensure auto assign IP setting is enabled
+- ensure shutdown behaviour is set to Stop
+- Tenancy - shared
+- keep network interface settings default
+- go to next config steps - storage
+- select default 8G general purpose storage. 
+- go to add tags: (tags are needed also in terms of accountancy / billing - to recognize what instance added to costs)
+  - Name: DEV-1 App Server 
+  - Evironment: Development 
+- configure new security group 
 
 
 
