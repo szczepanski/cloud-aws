@@ -72,24 +72,41 @@ Public IPs are required for application servers to be available over the interne
 - select Public Subnet 1 > modyfiy auto assign IP setting (subnet actions) => tick enable
 - select Public Subnet 2 > modyfiy auto assign IP setting (subnet actions) => tick enable
 
+# Application Server Setup 
+
+## IAM Role - Identity and Access Management
+
+Allows entities to call AWS services on one's behalf. 
+Purpose: to allow instance to perform specific actions and stronger security as AWS will handle permissions behind the scenes. 
+
+IAM => Roles - pick service that will be using the role: EC2
+Always go for least previlleged access method. 
+
+12. Create a role with no permissions as these will be established and added later. 
+Name it Dev-1EC2-Role
+
 # EC2 Set Up 
 
-Launch new instance
-EC2-Dev-1
+13. Launch new instance - EC2-Dev-1
 - Amazon Linux
 - t2 micro
 - change network to VPC-Dev-1 
 - select Public Subnet 1 (app server available in public domain) 
 - ensure auto assign IP setting is enabled
+- Select Role Dev-1-EC2-Role
 - ensure shutdown behaviour is set to Stop
 - Tenancy - shared
 - keep network interface settings default
 - go to next config steps - storage
-- select default 8G general purpose storage. 
+- select default 8G general purpose storage
+- ensure Delete on termination is ticked (to avoid extra costs wen not using it)
 - go to add tags: (tags are needed also in terms of accountancy / billing - to recognize what instance added to costs)
   - Name: DEV-1 App Server 
   - Evironment: Development 
-- configure new security group 
+- configure new security group Dev-1 Public SG 
+Leave SSH port open to single - own IP - for testing 
+- Add Rule - HTTP 0.0.0.0/0 
+- create and save new Key Pair - Dev-1-KeyPair.pem
 
 
 
