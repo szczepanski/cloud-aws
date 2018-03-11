@@ -35,6 +35,7 @@ VLSM / CIDR Subnet calculator
 2. Vpc->create Vpc [specify name and CIDR range with subnet mask, no dedicated Tenancy]
 192.160.0.0/19
 3. Set Up 6 Subnets to override the 3 default subnets - size 256 hosts each 
+![alt text](cloud-aws/dev-1-architecture/Screen Shot 2018-03-11 at 13.17.37.png "Logo Title Text 1")
 
 # Route table and Gateway 
 
