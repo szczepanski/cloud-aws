@@ -189,11 +189,26 @@ service httpd start
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
 21. Add steps as before plus add script in advanced setting - user data
 
+## EC2 - Application Server 2 Setup
+22. To create App Server 2 use rigth clic > launch more like this
+Adjust name and subnet => change to 2nd availibility 
+
+## 
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
+
 # Load balancer Configuration
 
-## EC2 - Application Server 2 Setup
+https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
 
-22. To create App Server 2 use rigth clic > launch more like this
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/load_balencer_architecture.png)
+
+23. Load balancer type => select Application LB
+Network LP option = > select only for high performance networks, static IPs etc.  
+
+
+
+
+
 
 
 
