@@ -155,10 +155,37 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html
     ]
 }
 ```
-##
+18. Attach above policy to Dev-1-EC2-role
 
+## Adjust ec2 app server via ssh 
+19. 
+```shell
+aws s3 cp help
+aws s3 cp s3://piotr.szczepanski/Dev-1/builds/Dev-1-landingPage.zip Dev-1-landingPage.zip
+rm index.html 
+unzip Dev-1-landingPage.zip
+rm -fR Dev-1-landingPage.zip
+```
+## update user data script
 
+20. 
+-y => promptless command flag
+```shell
+#!/bin/bash
 
+sudo su
+yum update -y
+yum install -y httpd php
+cd /var/www/html
+aws s3 cp s3://piotr.szczepanski/Dev-1/builds/Dev-1-landingPage.zip Dev-1-landingPage.zip
+unzip Dev-1-landingPage.zip
+mv Dev-1-landingPage/* .
+rm -rf Dev-1-landingPage.zip Dev-1-landingPage
+service httpd start
+```
+
+## Lunch Dev-1 EC2 Application Server 1 from scratch 
+Add steps as before plus add script in advanced setting - user data
 
 
 
