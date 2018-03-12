@@ -191,6 +191,9 @@ service httpd start
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
 21. Add steps as before plus add script in advanced setting - user data
 
+## Check Services and deamons
+service --status-all
+
 ## EC2 - Application Server 2 Setup
 22. To create App Server 2 use rigth clic > launch more like this
 Adjust name and subnet => change to 2nd availibility 
@@ -230,6 +233,15 @@ Review and create
 
 All stats (latency, requests, health and more) can be obtained Load Balancer or target groups. 
 To access app servers via the App Load balancer, copy paste into browser DNS A record (Load Balancer/ description tab)
+
+## Security Groups clean up 
+Ensure client interaction is restricted only to Load balancers level - DMZ zones in following way:  
+
+- ensure only load balancers are facing incoming web traffic
+
+- ensure public subnet(app servers) can only receive web traffic (port80) from App Load balancers ONLY. 
+Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
+- ensure ther is no open ssh access to app servers
 
 
 
