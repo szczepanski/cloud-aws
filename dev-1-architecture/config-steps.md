@@ -1,4 +1,5 @@
 Following notes are based on udemy course by Sai Kiran Rathan. 
+
 https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
 
 Piotr Szczepanski
