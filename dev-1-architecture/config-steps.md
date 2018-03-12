@@ -1,6 +1,8 @@
+Below notes are based on udemy course by Sai Kiran Rathan. 
+https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
 
 
-#  Top layer architecture 
+#  Architecture 
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png "Logo Title Text 1")
 
@@ -187,8 +189,12 @@ service httpd start
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
 21. Add steps as before plus add script in advanced setting - user data
 
-# Load balancer Setup
+# Load balancer Configuration
+
 ## EC2 - Application Server 2 Setup
+
+22. To create App Server 2 use rigth clic > launch more like this
+
 
 
 
