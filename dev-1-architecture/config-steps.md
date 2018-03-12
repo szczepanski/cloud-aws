@@ -241,6 +241,8 @@ Ensure client interaction is restricted only to Load balancers level - DMZ zones
 
 - ensure public subnet(app servers) can only receive web traffic (port80) from App Load balancers ONLY. 
 Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20public%20SG.png)
+
 - ensure ther is no open ssh access to app servers
 
 
