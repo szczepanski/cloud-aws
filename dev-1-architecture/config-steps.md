@@ -85,7 +85,7 @@ Always go for least previlleged access method.
 12. Create a role with no permissions as these will be established and added later. 
 Name it Dev-1EC2-Role
 
-## EC2 Set Up 
+## EC2 - Application Server 1 Setup
 
 13. Launch new instance - EC2-Dev-1
 - Amazon Linux
@@ -185,7 +185,10 @@ service httpd start
 ```
 
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
-Add steps as before plus add script in advanced setting - user data
+21. Add steps as before plus add script in advanced setting - user data
+
+# Load balancer Setup
+## EC2 - Application Server 2 Setup
 
 
 
