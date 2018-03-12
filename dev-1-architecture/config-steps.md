@@ -202,8 +202,36 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/load_balencer_architecture.png)
 
+## Set up
+
 23. Load balancer type => select Application LB
 Network LP option = > select only for high performance networks, static IPs etc.  
+
+Set name, internet facing, protocol http,select VPC,select avail. zones and related subnets:
+eu-west-2a  	DMZ Subnet 1
+eu-west-2b 	 DMZ Subnet 2
+
+Add tags: name, and environment
+24. Configure Security Groups => name and create new security group => leave default tcp 80 ; to be fine tuned later
+25 Configure Routing and Health checks- name and create new target group
+leave 
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/ALB%20config.png)
+
+26. Register Targets
+Add two app servers: 
+Dev-1 EC2 Application Server 1
+Dev-1 EC2 Application Server 2
+Review and create
+
+## Load balancer checks 
+
+All stats (latency, requests, health and more) can be obtained Load Balancer or target groups. 
+To access app servers via the App Load balancer, copy paste into browser DNS A record (Load Balancer/ description tab)
+
+
+
+
 
 
 
