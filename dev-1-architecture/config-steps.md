@@ -271,6 +271,71 @@ Review, select .pem file and proceed to
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/AS%20group.png)
 
+Save and uodate as follows:
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/update%20asg.png]
+Save the update and check 
+Verify wether the minimum 2 instances launched in correct 2 avail.zones.
+ensure Application LB A DNS record works (browser check)
+
+## Create Scaling Policies, Cloudwatch alarms, Simple Notification Services - SNS
+
+31. Go to SNS and create 4 topics:
+Dev-1 Scale up alarm 
+Dev-1 Scale down alarm 
+Dev-1-Service-Anomaly 
+Dev-1-AutoScalingActivityAlarm
+
+32. EC2>Auto Scaling Target GroupsScaling Policies> Add policy> create simple Scale policy
+
+Create Scale UP policy 
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/create%20scaling%20policy.png)
+
+
+and create new alarm - High cpu -to trigger/add one new instance)
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/new%20alarm%20scale%20up.png)
+
+
+33. Create Scale down policy and alarm - low cpu - for cpu utilzation <=20%  - to remove one oldest instance, save
+
+34. switch to notifications tab and create new notification
+
+create new notification linked to Dev-1-AutoScalingActivityAlarm
+This wil alarm whenever there is new launch,  termination, fail to launch or terminate.
+
+# To be completed:
+
+## finish auto scaling
+## Create and Configure DB Instance - mySQL RDB in private subnet
+## Manage & Cofigure DNS - Route 53
+## Set Up Slaack
+
+
+# Terraform
+
+Open source by hashicorp 
+
+Use cases: - infrastructure versin control and back up if prod config breaks; for multiple environments - minimalization of config drift. 
+
+ 3 Basic components:
+- confif file.df - written in hashicorp configuration language - HCL
+- cli => terraform plan
+- cli => terraform apply
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
