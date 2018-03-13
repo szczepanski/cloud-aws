@@ -320,10 +320,13 @@ Open source by hashicorp
 Use cases: - infrastructure versin control and back up if prod config breaks; for multiple environments - minimalization of config drift. 
 
  3 Basic components:
-- confif file.df - written in hashicorp configuration language - HCL
+- confif file.tf - written in hashicorp configuration language - HCL 
 - cli => terraform plan
 - cli => terraform apply
 
+Easy variable declaratin. 
+Good documentation. 
+Referencing files  => such as user data. 
 
 
 
