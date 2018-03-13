@@ -185,7 +185,7 @@ aws s3 cp s3://piotr.szczepanski/Dev-1/builds/Dev-1-landingPage.zip Dev-1-landin
 unzip Dev-1-landingPage.zip
 mv Dev-1-landingPage/* .
 rm -rf Dev-1-landingPage.zip Dev-1-landingPage
-service httpd start
+sudo service httpd start
 ```
 
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
@@ -240,11 +240,11 @@ Ensure client interaction is restricted only to Load balancers level - DMZ zones
 - ensure only load balancers are facing incoming web traffic
 
 - ensure public subnet(app servers) can receive web traffic (port80) from App Load balancers ONLY. 
-Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
+27. Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20public%20SG.png)
 
-- ensure traffic from load balances - outbound - goes to app servers ONLY (not further to DB) - by pasting Dev-1 Public SG (Apps Servers SG) ID into App Load Balancers SG - outbound - destination field 
+- 28. ensure traffic from load balances - outbound - goes to app servers ONLY (not further to DB) - by pasting Dev-1 Public SG (Apps Servers SG) ID into App Load Balancers SG - outbound - destination field 
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20load%20balancer%20SG.png)
 
@@ -252,9 +252,24 @@ Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Ap
 
 # Auto Scaling Groups Introduction
 
+hhttps://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
 
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/autoscaling.png)
 
+## Create launch configuration
+29. EC2>Launch Autoscaling
 
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/LC%20setup.png)
+
+Add default storage, tick delte on termination
+Select existing public security group for the EC2 app servers - Dev-1 Public SG
+Review, select .pem file and proceed to 
+
+## Create Auto Scaling Group
+
+30. 
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/AS%20group.png)
 
 
 
