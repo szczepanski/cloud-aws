@@ -2,8 +2,6 @@ Following notes are based on udemy course by Sai Kiran Rathan.
 
 https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
 
-Piotr Szczepanski
-
 #  Architecture 
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png "Logo Title Text 1")
