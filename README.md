@@ -404,14 +404,14 @@ Once this is done, entire DNS can be than managed from within Route 53.
 
 Open source by hashicorp 
 
-Use cases: - infrastructure versin control and back up if prod config breaks; for multiple environments - minimalization of config drift. 
+Use cases: - infrastructure versin control and back up if prod config breaks; for multiple environments - minimalization of config drift - consistency. 
 
  3 Basic components:
 - confif file.tf - written in hashicorp configuration language - HCL 
 - cli => terraform plan
 - cli => terraform apply
 
-Easy variable declaratin. 
+Easy variable declaration 
 Good documentation. 
 Referencing files  => such as user data. 
 
