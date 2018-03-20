@@ -233,6 +233,7 @@ All stats (latency, requests, health and more) can be obtained Load Balancer or 
 To access app servers via the App Load balancer, copy paste into browser DNS A record (Load Balancer/ description tab)
 
 ## Security Groups clean up 
+### Ensure app servers can access internet - unidirectional way - outbound only - needed when updating/ patching systems - access to external repositories, packages etc. 
 Ensure client interaction is restricted only to Load balancers level - DMZ zones in following way:  
 
 - ensure only load balancers are facing incoming web traffic
@@ -303,12 +304,10 @@ and create new alarm - High cpu -to trigger/add one new instance)
 create new notification linked to Dev-1-AutoScalingActivityAlarm
 This wil alarm whenever there is new launch,  termination, fail to launch or terminate.
 
-# To be completed:
+35. Create New Cloudwatch Alarm
 
-## finish auto scaling
-## Create and Configure DB Instance - mySQL RDB in private subnet
-## Manage & Cofigure DNS - Route 53
-## Set Up Slaack
+Load Balancing/Target Groups/ Monitoring Tab / Create New Alarm (Cloudwatch)
+
 
 
 # Terraform
