@@ -308,6 +308,11 @@ This wil alarm whenever there is new launch,  termination, fail to launch or ter
 
 Load Balancing/Target Groups/ Monitoring Tab / Create New Alarm (Cloudwatch)
 
+Create: Dev-1-Application-High-Average-Latency-Alarm
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/cloudWatchAlarm.png)
+
+Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
 
 
 # Terraform
