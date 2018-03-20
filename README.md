@@ -313,6 +313,7 @@ Create: Dev-1-Application-High-Average-Latency-Alarm
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/cloudWatchAlarm.png)
 
 Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
+Triger it when latency is =< .3s 
 
 
 # Terraform
