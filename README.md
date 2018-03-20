@@ -304,7 +304,7 @@ and create new alarm - High cpu -to trigger/add one new instance)
 create new notification linked to Dev-1-AutoScalingActivityAlarm
 This wil alarm whenever there is new launch,  termination, fail to launch or terminate.
 
-35. Create New Cloudwatch Alarm
+35. Create New Cloudwatch Alarms
 
 Load Balancing/Target Groups/ Monitoring Tab / Create New Alarm (Cloudwatch)
 
@@ -314,6 +314,45 @@ Create: Dev-1-Application-High-Average-Latency-Alarm
 
 Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
 Triger it when latency is =< .3s 
+
+36. Add autoscaling actions to previously created Alarms. 
+
+Click on specific alarm and open in in directly in CloudWatch/modify it:
+
+- Add Auto Scaling Action - Scale Up -(add one instance) - while alarm is on - state: Alarm
+- Add Auto Scaling Action - Scale Down -(remove one instance) - while alarm recovery notice is on - State: Alarm
+
+37. Configuring SNS Topic Subscriptions 
+SNS/Topics/Subscribe to topic
+
+- Set Protocol to email
+- set endpoint to mail address
+
+Open subscribed email are confrim the subscription. 
+
+To test go to 
+Auto Scaling/Autoscaling Groups/Details Tab/ Edit 
+
+- temporarly change desired  from 2 to 3 ; save
+
+# Create and Configure MySqlDB instance
+
+## Configure designated security group 
+
+38. Create new security group 
+
+Ensure when opening ports - here 3306 (MySQL) that any traffic via this port is coming from (source) public subnet - in this architecture - app servers subnet (not from DMZ - internet facing zone). 
+
+Whenever additional ports are needed - set source to  public (app servers / non internet facing) security group. 
+
+## Setup RDS DB - 
+
+39. Create new subnet group:
+- RDS/Subnet groups 
+
+
+
+
 
 
 # Terraform
@@ -330,6 +369,8 @@ Use cases: - infrastructure versin control and back up if prod config breaks; fo
 Easy variable declaratin. 
 Good documentation. 
 Referencing files  => such as user data. 
+
+## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto scaling group/ set desired (instances) to 0. 
 
 
 
