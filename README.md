@@ -345,7 +345,7 @@ Ensure when opening ports - here 3306 (MySQL) that any traffic via this port is 
 
 Whenever additional ports are needed - set source to  public (app servers / non internet facing) security group. 
 
-## Setup RDS DB - 
+## Setup RDS DB
 
 39. Create new subnet group:
 - go to RDS/Subnet groups 
@@ -353,6 +353,47 @@ Whenever additional ports are needed - set source to  public (app servers / non 
 Add two subnets -for 2 availibility zones:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/db%20subnet.png)
+
+## Cofigure RDS Instances 
+
+40. 
+go to RDS/Instances/ Launch
+pick DB type - here Amazon Aurora (MySql) and configure all required settings. 
+
+# DNS Management
+
+## Configure Amazon Cerification Manager (Amazon Issued SSl certificate).
+
+SSL sertificate needs to be assigned to load balancer by creating HTTPS listner that forwards the traffic to specified target groups. 
+
+41. 
+Certificate Manager > request a certificate
+- add domain name
+- select validation method => email (AWS validation email message to be sent to the domain owner registered address). 
+
+
+Once approved by the owner certificate will show as issued. 
+
+## Configure Load Balancer HTTPS Load Balancer 
+42. 
+Load Balancing/ Load Balancers/ Listeners/ 
+add https port 443 
+
+## Setting up Route 53
+
+43. Go to Route 53/Create Hosted Zone
+
+provide domain name and type: hosted zone and create. 
+
+In order to have Route 53 manging the DNS, original (go Dady, 1&1, etc) nameservers entries need to be changed to the nameservers entries provided by AWS. 
+
+Once this is done, entire DNS can be than managed from within Route 53. 
+
+44. Create A record within Route 53 pointing to the Dev-1 Application Loadbalancer (Simple route policy). 
+45. Wait some time to test / resolve new A record (pointig to app LB)
+
+
+
 
 
 
