@@ -348,7 +348,11 @@ Whenever additional ports are needed - set source to  public (app servers / non 
 ## Setup RDS DB - 
 
 39. Create new subnet group:
-- RDS/Subnet groups 
+- go to RDS/Subnet groups 
+
+Add two subnets -for 2 availibility zones:
+
+![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/db%20subnet.png)
 
 
 
