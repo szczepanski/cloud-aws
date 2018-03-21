@@ -415,6 +415,22 @@ Easy variable declaration
 Good documentation. 
 Referencing files  => such as user data. 
 
+### Setup IAM user:
+Create new user in IAM with programmatic access:
+dev-1-terraform-user
+
+add it to group:
+dev-1-admin-programmatic-access
+
+### Install AWS cli and configure profile  
+
+
+provider "aws" {
+  region                  = "us-west-2"
+  shared_credentials_file = "/Users/tf_user/.aws/creds"
+  profile                 = "customprofile"
+}
+
 ## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto scaling group/ set desired (instances) to 0. 
 
 
