@@ -1,7 +1,18 @@
-Piotr Szczepanski 
+<p align="center">
+  <b>Some Links:</b><br>
+  <a href="#">Link 1</a> |
+  <a href="#">Link 2</a> |
+  <a href="#">Link 3</a>
+  <br><br>
+</p>
+ 
+   ### Piotr Szczepanski 
 
-# Three Tier AWS Infrastructure
-### Basic Theory and setup notes
+# Three Tier AWS Infrastructure 
+### Theory and setup notes 
+
+
+
 
 References:
 - Sai Kiran Rathan
