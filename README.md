@@ -1,4 +1,7 @@
-Author: Piotr Szczepanski 
+Piotr Szczepanski 
+
+# Three Tier AWS Infrastructure
+### Basic Theory and setup notes
 
 References:
 - Sai Kiran Rathan
