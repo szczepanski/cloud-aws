@@ -1,7 +1,8 @@
 Piotr Szczepanski 
 # Three Tier AWS Infrastructure 
 ##### Theory and setup notes 
-
+<br>
+<br>
 References:
  - Sai Kiran Rathan
  - https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
