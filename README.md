@@ -1,6 +1,7 @@
-Following notes are based on udemy course by Sai Kiran Rathan. 
+References:
+- Sai Kiran Rathan
 
-https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
+- https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
 
 #  Architecture 
 
@@ -13,9 +14,9 @@ https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/le
 - 6 subnets - three per each availability zone
 
 # VPC and Network set up
-## Three Tier Architecture:
+## Three-Tier Architecture:
 - Private subnet
-- Public subnet
+- Public Subnet
 - DMZ subnet
 
 ## VPC components: 
@@ -26,10 +27,10 @@ https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/le
 
 Client can only access ELB DMZ subnet. 
 
-APP servers communicates only with ELB. 
+APP servers communicate only with ELB. 
 Database servers communicate with App servers only
 
-Security groups act as firewall - restricting access. 
+Security groups act as a firewall - restricting access. 
 
 ## Steps
 
@@ -45,25 +46,25 @@ Basic route table has been configured automatically once the initial VPC setup h
 ### Internet Gateway config and additional Route Tables 
 4. Configure new Gateway and attach to VPC
 5. Set Up Main Route Table - RT:
- Go to routes/ routes tab / edit/ and add another route:
-0.0.0.0/0 - all web;  select taget IGW: Dev-1-IGW; save
+ Go to routes/ routes tab/edit/ and add another route:
+0.0.0.0/0 - all web;  select target IGW: Dev-1-IGW; save
 6. Set up new RT - Subnet specific - DMZ:
 Add internet address and target Dev-1-IGW. 
-save and switch to subnet associations tab and add two dmz subnets
+save and switch to subnet associations tab and add two DMZ subnets
 7. Set up new RT Subnet specific  - Public:
 Add relevant subnets
 8. Set up new RT Subnet specific  - Private:
 Add relevant subnets
 ### NAT - Set up private route tables - NAT via NAT Gateway
-Purpose for NAT - all private instances/ subnets can not be accessed via Internet BUT can access internet without Public IP - NAT. 
-9. NAT Gateways > Create NAT GW - two (HIGH avialibility HA)
-One NAT GW per availibility zone 
+The purpose of NAT - all private instances/ subnets cannot be accessed via Internet BUT can access internet without Public IP - NAT. 
+9. NAT Gateways > Create NAT GW - two (HIGH availability HA)
+One NAT GW per availability zone 
 select public subnet 1 and allocate new EIP - elastic IP -  NAT GW 1
 select public subnet 2 and allocate new EIP - elastic IP - NAT GW 2
 10. Set up two new NAT private route tables (HA)
-- 0.0.0.0/0 - all web;  select taget NAT GW 1; save
+- 0.0.0.0/0 - all web;  select target NAT GW 1; save
 - switch to subnet associations tab and Private subnet 1
-- 0.0.0.0/0 - all web;  select taget NAT GW 2; save
+- 0.0.0.0/0 - all web;  select target NAT GW 2; save
 - switch to subnet associations tab and Private subnet 2
 
 ## Enable Auto Assign Public IP on subnets
@@ -79,10 +80,10 @@ Public IPs are required for application servers to be available over the interne
 ## IAM Role - Identity and Access Management
 
 Allows entities to call AWS services on one's behalf. 
-Purpose: to allow instance to perform specific actions and stronger security as AWS will handle permissions behind the scenes. 
+Purpose: to allow the instance to perform specific actions and stronger security as AWS will handle permissions behind the scenes. 
 
 IAM => Roles - pick service that will be using the role: EC2
-Always go for least previlleged access method. 
+Always go for the least privileged access method. 
 
 12. Create a role with no permissions as these will be established and added later. 
 Name it Dev-1EC2-Role
@@ -101,8 +102,8 @@ Name it Dev-1EC2-Role
 - keep network interface settings default
 - go to next config steps - storage
 - select default 8G general purpose storage
-- ensure Delete on termination is ticked (to avoid extra costs wen not using it)
-- go to add tags: (tags are needed also in terms of accountancy / billing - to recognize what instance added to costs)
+- ensure Delete on termination is ticked (to avoid extra costs when not using it)
+- go to add tags: (tags are needed also in terms of accountancy/billing - to recognize what instance added to costs)
   - Name: DEV-1 App Server 
   - Evironment: Development 
 - configure new security group Dev-1 Public SG 
@@ -120,7 +121,7 @@ sudo yum update -y  [option -y => promptless]
 sudo yum install -y httpd php
 sudo service httpd startig
 
-## verify http appache server 
+## verify http apache server 
 browser or curl to server public IP
 
 ## amend landig page - optional
@@ -132,7 +133,7 @@ echo "Piotr Testing Page" > index.html
 ## S3 configuration
 
 16. configure standard S3 bucket, add new folder => builds and upload 
-sample page / application  
+sample page/application  
 
 ## IAM Role adjustment
 17. Create policy 
@@ -187,19 +188,19 @@ sudo service httpd start
 ```
 
 ## Lunch Dev-1 EC2 Application Server 1 from scratch 
-21. Add steps as before plus add script in advanced setting - user data
+21. Add steps as before plus add a script in advanced setting - user data
 
-## Check Services and deamons
+## Check Services and daemons
 service --status-all
 
 ## EC2 - Application Server 2 Setup
-22. To create App Server 2 use rigth clic > launch more like this
-Adjust name and subnet => change to 2nd availibility 
+22. To create App Server 2 use right-click > launch more like this
+Adjust name and subnet => change to 2nd availability 
 
 ## 
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
 
-# Load balancer Configuration
+# Load Balancer Configuration
 
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
 
@@ -208,14 +209,14 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction
 ## Set up
 
 23. Load balancer type => select Application LB
-Network LP option = > select only for high performance networks, static IPs etc.  
+Network LP option = > select only for high-performance networks, static IPs etc.  
 
 Set name, internet facing, protocol http,select VPC,select avail. zones and related subnets:
-eu-west-2a  	DMZ Subnet 1
-eu-west-2b 	 DMZ Subnet 2
+eu-west-2a      DMZ Subnet 1
+eu-west-2b      DMZ Subnet 2
 
 Add tags: name, and environment
-24. Configure Security Groups => name and create new security group => leave default tcp 80 ; to be fine tuned later
+24. Configure Security Groups => name and create new security group => leave default TCP 80 ; to be fine-tuned later
 25 Configure Routing and Health checks- name and create new target group
 leave 
 
@@ -230,7 +231,7 @@ Review and create
 ## Load balancer checks 
 
 All stats (latency, requests, health and more) can be obtained Load Balancer or target groups. 
-To access app servers via the App Load balancer, copy paste into browser DNS A record (Load Balancer/ description tab)
+To access app servers via the App Load balancer, copy-paste into browser DNS A record (Load Balancer/ description tab)
 
 ## Security Groups clean up 
 ### Ensure app servers can access internet - unidirectional way - outbound only - needed when updating/ patching systems - access to external repositories, packages etc. 
@@ -260,9 +261,9 @@ hhttps://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-s
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/LC%20setup.png)
 
-Add default storage, tick delte on termination
+Add default storage, tick delete on termination
 Select existing public security group for the EC2 app servers - Dev-1 Public SG
-Review, select .pem file and proceed to 
+Review, select the .pem file and proceed to 
 
 ## Create Auto Scaling Group
 
@@ -270,17 +271,17 @@ Review, select .pem file and proceed to
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/AS%20group.png)
 
-Save and uodate as follows:
+Save and update as follows:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/update%20asg.png]
 Save the update and check 
-Verify wether the minimum 2 instances launched in correct 2 avail.zones.
+Verify whether the minimum 2 instances launched within correct 2 avail.zones.
 ensure Application LB A DNS record works (browser check)
 
 ## Create Scaling Policies, Cloudwatch alarms, Simple Notification Services - SNS
 
 31. Go to SNS and create 4 topics:
-Dev-1 Scale up alarm 
+Dev-1 Scale-up alarm 
 Dev-1 Scale down alarm 
 Dev-1-Service-Anomaly 
 Dev-1-AutoScalingActivityAlarm
@@ -292,17 +293,17 @@ Create Scale UP policy
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/create%20scaling%20policy.png)
 
 
-and create new alarm - High cpu -to trigger/add one new instance)
+and create new alarm - High CPU -to trigger/add one new instance)
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/new%20alarm%20scale%20up.png)
 
 
-33. Create Scale down policy and alarm - low cpu - for cpu utilzation <=20%  - to remove one oldest instance, save
+33. Create Scale down policy and alarm - low CPU - for CPU utilization <=20%  - to remove one oldest instance, save
 
-34. switch to notifications tab and create new notification
+34. switch to notifications tab and create a new notification
 
 create new notification linked to Dev-1-AutoScalingActivityAlarm
-This wil alarm whenever there is new launch,  termination, fail to launch or terminate.
+This will alarm whenever there is new launch,  termination, fail to launch or terminate.
 
 35. Create New Cloudwatch Alarms
 
@@ -313,13 +314,13 @@ Create: Dev-1-Application-High-Average-Latency-Alarm
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/cloudWatchAlarm.png)
 
 Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
-Triger it when latency is =< .3s 
+Trigger it when latency is = < 3s 
 
 36. Add autoscaling actions to previously created Alarms. 
 
-Click on specific alarm and open in in directly in CloudWatch/modify it:
+Click on the specific alarm and open directly in CloudWatch/modify it:
 
-- Add Auto Scaling Action - Scale Up -(add one instance) - while alarm is on - state: Alarm
+- Add Auto Scaling Action - Scale Up -(add one instance) - while the alarm is on - state: Alarm
 - Add Auto Scaling Action - Scale Down -(remove one instance) - while alarm recovery notice is on - State: Alarm
 
 37. Configuring SNS Topic Subscriptions 
@@ -328,22 +329,22 @@ SNS/Topics/Subscribe to topic
 - Set Protocol to email
 - set endpoint to mail address
 
-Open subscribed email are confrim the subscription. 
+Open the subscribed email and confirm the subscription. 
 
 To test go to 
 Auto Scaling/Autoscaling Groups/Details Tab/ Edit 
 
-- temporarly change desired  from 2 to 3 ; save
+- temporarily change desired  from 2 to 3; save
 
 # Create and Configure MySqlDB instance
 
 ## Configure designated security group 
 
-38. Create new security group 
+38. Create a new security group 
 
 Ensure when opening ports - here 3306 (MySQL) that any traffic via this port is coming from (source) public subnet - in this architecture - app servers subnet (not from DMZ - internet facing zone). 
 
-Whenever additional ports are needed - set source to  public (app servers / non internet facing) security group. 
+Whenever additional ports are needed - set the source to public (app servers / non-internet facing) security group. 
 
 ## Setup RDS DB
 
@@ -354,7 +355,7 @@ Add two subnets -for 2 availibility zones:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/db%20subnet.png)
 
-## Cofigure RDS Instances 
+## Configure RDS Instances 
 
 40. 
 go to RDS/Instances/ Launch
@@ -364,7 +365,7 @@ pick DB type - here Amazon Aurora (MySql) and configure all required settings.
 
 ## Configure Amazon Cerification Manager (Amazon Issued SSl certificate).
 
-SSL sertificate needs to be assigned to load balancer by creating HTTPS listner that forwards the traffic to specified target groups. 
+SSL certificate needs to be assigned to load balancer by creating HTTPS listeners that forward the traffic to specified target groups. 
 
 41. 
 Certificate Manager > request a certificate
@@ -385,12 +386,12 @@ add https port 443
 
 provide domain name and type: hosted zone and create. 
 
-In order to have Route 53 manging the DNS, original (go Dady, 1&1, etc) nameservers entries need to be changed to the nameservers entries provided by AWS. 
+In order to have Route 53 managing the DNS, original (GoDaddy, 1&1, etc) nameservers entries need to be changed to the nameservers entries provided by AWS. 
 
-Once this is done, entire DNS can be than managed from within Route 53. 
+Once this is done, entire DNS can be then managed from within Route 53. 
 
 44. Create A record within Route 53 pointing to the Dev-1 Application Loadbalancer (Simple route policy). 
-45. Wait some time to test / resolve new A record (pointig to app LB)
+45. Wait some time to test/resolve new A record (pointing to app LB)
 
 
 
@@ -404,7 +405,7 @@ Once this is done, entire DNS can be than managed from within Route 53.
 
 Open source by hashicorp 
 
-Use cases: - infrastructure versin control and back up if prod config breaks; for multiple environments - minimalization of config drift - consistency. 
+Use cases: - infrastructure version control and back up if prod config breaks; for multiple environments - minimalization of config drift - consistency. 
 
  3 Basic components:
 - confif file.tf - written in hashicorp configuration language - HCL 
@@ -416,13 +417,13 @@ Good documentation.
 Referencing files  => such as user data. 
 
 ### Setup IAM user:
-Create new user in IAM with programmatic access:
+Create a new user in IAM with programmatic access:
 dev-1-terraform-user
 
-add it to group:
+add it to the group:
 dev-1-admin-programmatic-access
 
-### Install AWS cli and configure profile  
+### Install AWS cli and configure the profile  
 
 
 provider "aws" {
@@ -431,7 +432,7 @@ provider "aws" {
   profile                 = "customprofile"
 }
 
-## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto scaling group/ set desired (instances) to 0. 
+## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto-scaling group/ set desired (instances) to 0. 
 
 
 
