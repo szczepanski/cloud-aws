@@ -1,3 +1,5 @@
+Author: Piotr Szczepanski 
+
 References:
 - Sai Kiran Rathan
 
