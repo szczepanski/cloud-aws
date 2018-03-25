@@ -10,10 +10,10 @@ References:
 
 - Region - geographic
 - VPC - private IP space 
-- two availability zones - resilence
+- two availability zones - resilience
 - 6 subnets - three per each availability zone
 
-# VPC and Network set up
+# VPC and Network setup
 ## Three-Tier Architecture:
 - Private subnet
 - Public Subnet
@@ -72,8 +72,8 @@ select public subnet 2 and allocate new EIP - elastic IP - NAT GW 2
 Public IPs are required for application servers to be available over the internet. 
 
 11. VPC/Subnets section 
-- select Public Subnet 1 > modyfiy auto assign IP setting (subnet actions) => tick enable
-- select Public Subnet 2 > modyfiy auto assign IP setting (subnet actions) => tick enable
+- select Public Subnet 1 > modify auto assign IP setting (subnet actions) => tick enable
+- select Public Subnet 2 > modify auto assign IP setting (subnet actions) => tick enable
 
 # Application Server Setup 
 
@@ -105,26 +105,26 @@ Name it Dev-1EC2-Role
 - ensure Delete on termination is ticked (to avoid extra costs when not using it)
 - go to add tags: (tags are needed also in terms of accountancy/billing - to recognize what instance added to costs)
   - Name: DEV-1 App Server 
-  - Evironment: Development 
+  - Environment: Development 
 - configure new security group Dev-1 Public SG 
 Leave SSH port open to single - own IP - for testing 
 - Add Rule - HTTP 0.0.0.0/0 
 - create and save new Key Pair - Dev-1-KeyPair.pem
-when testing ssh - ensure pem lsfile permissions are set to min 400
+when testing ssh - ensure .pem file permissions are set to min 400
 
 ## ssh testing
 14. ssh -i /KeyPair/file/location.pem  ec2-user@x.x.x.x
 
-## initila server setup / patch
+## initial server setup / patch
 15. 
 sudo yum update -y  [option -y => promptless]
 sudo yum install -y httpd php
-sudo service httpd startig
+sudo service httpd start
 
 ## verify http apache server 
 browser or curl to server public IP
 
-## amend landig page - optional
+## amend landing page - optional
 ```shell 
 cd /var/www/html
 echo "Piotr Testing Page" > index.html
@@ -239,7 +239,7 @@ Ensure client interaction is restricted only to Load balancers level - DMZ zones
 
 - ensure only load balancers are facing incoming web traffic
 
-- ensure public subnet(app servers) can receive web traffic (port80) from App Load balancers ONLY. 
+- ensure public subnet(app servers) can receive web traffic (port 80) from App Load balancers ONLY. 
 27. Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20public%20SG.png)
@@ -252,12 +252,12 @@ Ensure client interaction is restricted only to Load balancers level - DMZ zones
 
 # Auto Scaling Groups Introduction
 
-hhttps://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
+https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/autoscaling.png)
 
 ## Create launch configuration
-29. EC2>Launch Autoscaling
+29. EC2>Launch Auto Scaling
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/LC%20setup.png)
 
@@ -286,7 +286,7 @@ Dev-1 Scale down alarm
 Dev-1-Service-Anomaly 
 Dev-1-AutoScalingActivityAlarm
 
-32. EC2>Auto Scaling Target GroupsScaling Policies> Add policy> create simple Scale policy
+32. EC2>Auto Scaling Target Groups Scaling Policies> Add policy> create simple Scale policy
 
 Create Scale UP policy 
 
@@ -316,7 +316,7 @@ Create: Dev-1-Application-High-Average-Latency-Alarm
 Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
 Trigger it when latency is = < 3s 
 
-36. Add autoscaling actions to previously created Alarms. 
+36. Add auto scaling actions to previously created Alarms. 
 
 Click on the specific alarm and open directly in CloudWatch/modify it:
 
@@ -336,7 +336,7 @@ Auto Scaling/Autoscaling Groups/Details Tab/ Edit
 
 - temporarily change desired  from 2 to 3; save
 
-# Create and Configure MySqlDB instance
+# Create and Configure MySql DB instance
 
 ## Configure designated security group 
 
@@ -351,7 +351,7 @@ Whenever additional ports are needed - set the source to public (app servers / n
 39. Create new subnet group:
 - go to RDS/Subnet groups 
 
-Add two subnets -for 2 availibility zones:
+Add two subnets -for 2 availability zones:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/db%20subnet.png)
 
@@ -363,9 +363,9 @@ pick DB type - here Amazon Aurora (MySql) and configure all required settings.
 
 # DNS Management
 
-## Configure Amazon Cerification Manager (Amazon Issued SSl certificate).
+## Configure Amazon Certificate Manager (Amazon Issued SSl certificate).
 
-SSL certificate needs to be assigned to load balancer by creating HTTPS listeners that forward the traffic to specified target groups. 
+SSL certificate needs to be assigned to load balancer by creating HTTPS listeners that forward the traffic to specific target groups. 
 
 41. 
 Certificate Manager > request a certificate
@@ -390,7 +390,7 @@ In order to have Route 53 managing the DNS, original (GoDaddy, 1&1, etc) nameser
 
 Once this is done, entire DNS can be then managed from within Route 53. 
 
-44. Create A record within Route 53 pointing to the Dev-1 Application Loadbalancer (Simple route policy). 
+44. Create A record within Route 53 pointing to the Dev-1 Application Load Balancer (Simple route policy). 
 45. Wait some time to test/resolve new A record (pointing to app LB)
 
 
@@ -405,10 +405,10 @@ Once this is done, entire DNS can be then managed from within Route 53.
 
 Open source by hashicorp 
 
-Use cases: - infrastructure version control and back up if prod config breaks; for multiple environments - minimalization of config drift - consistency. 
+Use cases: - infrastructure version control and back up if prod config breaks; for multiple environments - minimization of config drift - consistency. 
 
  3 Basic components:
-- confif file.tf - written in hashicorp configuration language - HCL 
+- config file.tf - written in hashicorp configuration language - HCL 
 - cli => terraform plan
 - cli => terraform apply
 
@@ -433,31 +433,3 @@ provider "aws" {
 }
 
 ## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto-scaling group/ set desired (instances) to 0. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
