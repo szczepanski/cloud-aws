@@ -1,8 +1,6 @@
 Piotr Szczepanski
 
-# Three Tier AWS Infrastructure 
-<br>
-<br>
+# Three Tier Infrastructure 
 <br>
 References:
 
