@@ -1,10 +1,62 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Three Tier Infrastructure](#three-tier-infrastructure)
+- [Architecture](#architecture)
+- [VPC and Network setup](#vpc-and-network-setup)
+  - [Three-Tier Architecture:](#three-tier-architecture)
+  - [VPC components:](#vpc-components)
+  - [Steps](#steps)
+  - [Route table, Internet Gateway IGW and NAT Gateway](#route-table-internet-gateway-igw-and-nat-gateway)
+    - [Internet Gateway config and additional Route Tables](#internet-gateway-config-and-additional-route-tables)
+  - [Enable Auto Assign Public IP on subnets](#enable-auto-assign-public-ip-on-subnets)
+- [Application Server Setup](#application-server-setup)
+  - [IAM Role - Identity and Access Management](#iam-role---identity-and-access-management)
+  - [EC2 - Application Server 1 Setup](#ec2---application-server-1-setup)
+  - [ssh testing](#ssh-testing)
+  - [initial server setup / patch](#initial-server-setup--patch)
+  - [verify http apache server](#verify-http-apache-server)
+  - [amend landing page - optional](#amend-landing-page---optional)
+  - [S3 configuration](#s3-configuration)
+  - [IAM Role adjustment](#iam-role-adjustment)
+  - [Adjust ec2 app server via ssh](#adjust-ec2-app-server-via-ssh)
+  - [update user data script](#update-user-data-script)
+  - [Lunch Dev-1 EC2 Application Server 1 from scratch](#lunch-dev-1-ec2-application-server-1-from-scratch)
+  - [Check Services and daemons](#check-services-and-daemons)
+  - [EC2 - Application Server 2 Setup](#ec2---application-server-2-setup)
+  - [](#)
+- [Load Balancer Configuration](#load-balancer-configuration)
+  - [Set up](#set-up)
+  - [Load balancer checks](#load-balancer-checks)
+  - [Security Groups clean up](#security-groups-clean-up)
+    - [Ensure app servers can access internet - unidirectional way - outbound only - needed when updating/ patching systems - access to external repositories, packages etc.](#ensure-app-servers-can-access-internet---unidirectional-way---outbound-only---needed-when-updating-patching-systems---access-to-external-repositories-packages-etc)
+- [Auto Scaling Groups Introduction](#auto-scaling-groups-introduction)
+  - [Create launch configuration](#create-launch-configuration)
+  - [Create Auto Scaling Group](#create-auto-scaling-group)
+  - [Create Scaling Policies, Cloudwatch alarms, Simple Notification Services - SNS](#create-scaling-policies-cloudwatch-alarms-simple-notification-services---sns)
+- [Create and Configure MySql DB instance](#create-and-configure-mysql-db-instance)
+  - [Configure designated security group](#configure-designated-security-group)
+  - [Setup RDS DB](#setup-rds-db)
+  - [Configure RDS Instances](#configure-rds-instances)
+- [DNS Management](#dns-management)
+  - [Configure Amazon Certificate Manager (Amazon Issued SSl certificate).](#configure-amazon-certificate-manager-amazon-issued-ssl-certificate)
+  - [Configure Load Balancer HTTPS Load Balancer](#configure-load-balancer-https-load-balancer)
+  - [Setting up Route 53](#setting-up-route-53)
+- [Terraform](#terraform)
+    - [Setup IAM user:](#setup-iam-user)
+    - [Install AWS cli and configure the profile](#install-aws-cli-and-configure-the-profile)
+  - [To avoid extra costs, stop or terminate instances and go to auto scaling/ auto-scaling group/ set desired (instances) to 0.](#to-avoid-extra-costs-stop-or-terminate-instances-and-go-to-auto-scaling-auto-scaling-group-set-desired-instances-to-0)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 Piotr Szczepanski
 
-# Three Tier Infrastructure 
+# Three Tier Infrastructure
 <br>
 References:
 
-Sai Kiran Rathan 
+Sai Kiran Rathan
 
 https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/learn/v4/overview
 
@@ -12,13 +64,13 @@ https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/le
 <br>
 <br>
 
-#  Architecture 
+#  Architecture
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/architecture%20design.png "Logo Title Text 1")
 
 
 - Region - geographic
-- VPC - private IP space 
+- VPC - private IP space
 - two availability zones - resilience
 - 6 subnets - three per each availability zone
 
@@ -28,48 +80,48 @@ https://www.udemy.com/setup-aws-infrastructure-for-production-learn-terraform/le
 - Public Subnet
 - DMZ subnet
 
-## VPC components: 
+## VPC components:
 
-- 2 Elastic load balancers - DMZ Subnet 
-- 2 Application servers - public subnet 
+- 2 Elastic load balancers - DMZ Subnet
+- 2 Application servers - public subnet
 - 2 database servers - private subnets
 
-Client can only access ELB DMZ subnet. 
+Client can only access ELB DMZ subnet.
 
-APP servers communicate only with ELB. 
+APP servers communicate only with ELB.
 Database servers communicate with App servers only
 
-Security groups act as a firewall - restricting access. 
+Security groups act as a firewall - restricting access.
 
 ## Steps
 
-VLSM / CIDR Subnet calculator 
+VLSM / CIDR Subnet calculator
 1. www.vlsm-calc.net
 2. Vpc->create Vpc [specify name and CIDR range with subnet mask, no dedicated Tenancy]
 192.160.0.0/19
-3. Set Up 6 Subnets to override the 3 default subnets - size 256 hosts each 
+3. Set Up 6 Subnets to override the 3 default subnets - size 256 hosts each
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/Screen%20Shot%202018-03-11%20at%2013.17.37.png)
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/vpc%20subnets.png)
 
-## Route table, Internet Gateway IGW and NAT Gateway 
-Basic route table has been configured automatically once the initial VPC setup has been done. 
-### Internet Gateway config and additional Route Tables 
+## Route table, Internet Gateway IGW and NAT Gateway
+Basic route table has been configured automatically once the initial VPC setup has been done.
+### Internet Gateway config and additional Route Tables
 4. Configure new Gateway and attach to VPC
 5. Set Up Main Route Table - RT:
  Go to routes/ routes tab/edit/ and add another route:
 0.0.0.0/0 - all web;  select target IGW: Dev-1-IGW; save
 6. Set up new RT - Subnet specific - DMZ:
-Add internet address and target Dev-1-IGW. 
+Add internet address and target Dev-1-IGW.
 save and switch to subnet associations tab and add two DMZ subnets
 7. Set up new RT Subnet specific  - Public:
 Add relevant subnets
 8. Set up new RT Subnet specific  - Private:
 Add relevant subnets
 ### NAT - Set up private route tables - NAT via NAT Gateway
-The purpose of NAT - all private instances/ subnets cannot be accessed via Internet BUT can access internet without Public IP - NAT. 
+The purpose of NAT - all private instances/ subnets cannot be accessed via Internet BUT can access internet without Public IP - NAT.
 9. NAT Gateways > Create NAT GW - two (HIGH availability HA)
-One NAT GW per availability zone 
+One NAT GW per availability zone
 select public subnet 1 and allocate new EIP - elastic IP -  NAT GW 1
 select public subnet 2 and allocate new EIP - elastic IP - NAT GW 2
 10. Set up two new NAT private route tables (HA)
@@ -80,23 +132,23 @@ select public subnet 2 and allocate new EIP - elastic IP - NAT GW 2
 
 ## Enable Auto Assign Public IP on subnets
 
-Public IPs are required for application servers to be available over the internet. 
+Public IPs are required for application servers to be available over the internet.
 
-11. VPC/Subnets section 
+11. VPC/Subnets section
 - select Public Subnet 1 > modify auto assign IP setting (subnet actions) => tick enable
 - select Public Subnet 2 > modify auto assign IP setting (subnet actions) => tick enable
 
-# Application Server Setup 
+# Application Server Setup
 
 ## IAM Role - Identity and Access Management
 
-Allows entities to call AWS services on one's behalf. 
-Purpose: to allow the instance to perform specific actions and stronger security as AWS will handle permissions behind the scenes. 
+Allows entities to call AWS services on one's behalf.
+Purpose: to allow the instance to perform specific actions and stronger security as AWS will handle permissions behind the scenes.
 
 IAM => Roles - pick service that will be using the role: EC2
-Always go for the least privileged access method. 
+Always go for the least privileged access method.
 
-12. Create a role with no permissions as these will be established and added later. 
+12. Create a role with no permissions as these will be established and added later.
 Name it Dev-1EC2-Role
 
 ## EC2 - Application Server 1 Setup
@@ -104,8 +156,8 @@ Name it Dev-1EC2-Role
 13. Launch new instance - EC2-Dev-1
 - Amazon Linux
 - t2 micro
-- change network to VPC-Dev-1 
-- select Public Subnet 1 (app server available in public domain) 
+- change network to VPC-Dev-1
+- select Public Subnet 1 (app server available in public domain)
 - ensure auto assign IP setting is enabled
 - Select Role Dev-1-EC2-Role
 - ensure shutdown behaviour is set to Stop
@@ -115,11 +167,11 @@ Name it Dev-1EC2-Role
 - select default 8G general purpose storage
 - ensure Delete on termination is ticked (to avoid extra costs when not using it)
 - go to add tags: (tags are needed also in terms of accountancy/billing - to recognize what instance added to costs)
-  - Name: DEV-1 App Server 
-  - Environment: Development 
-- configure new security group Dev-1 Public SG 
-Leave SSH port open to single - own IP - for testing 
-- Add Rule - HTTP 0.0.0.0/0 
+  - Name: DEV-1 App Server
+  - Environment: Development
+- configure new security group Dev-1 Public SG
+Leave SSH port open to single - own IP - for testing
+- Add Rule - HTTP 0.0.0.0/0
 - create and save new Key Pair - Dev-1-KeyPair.pem
 when testing ssh - ensure .pem file permissions are set to min 400
 
@@ -127,27 +179,27 @@ when testing ssh - ensure .pem file permissions are set to min 400
 14. ssh -i /KeyPair/file/location.pem  ec2-user@x.x.x.x
 
 ## initial server setup / patch
-15. 
+15.
 sudo yum update -y  [option -y => promptless]
 sudo yum install -y httpd php
 sudo service httpd start
 
-## verify http apache server 
+## verify http apache server
 browser or curl to server public IP
 
 ## amend landing page - optional
-```shell 
+```shell
 cd /var/www/html
 echo "Piotr Testing Page" > index.html
-``` 
+```
 
 ## S3 configuration
 
-16. configure standard S3 bucket, add new folder => builds and upload 
-sample page/application  
+16. configure standard S3 bucket, add new folder => builds and upload
+sample page/application
 
 ## IAM Role adjustment
-17. Create policy 
+17. Create policy
 IAM>Roles>Dev-1-EC2-role> Add inline policy>JSON Tab
 For assistance:
 https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html
@@ -171,18 +223,18 @@ https://docs.aws.amazon.com/AmazonS3/latest/dev/using-with-s3-actions.html
 ```
 18. Attach above policy to Dev-1-EC2-role
 
-## Adjust ec2 app server via ssh 
-19. 
+## Adjust ec2 app server via ssh
+19.
 ```shell
 aws s3 cp help
 aws s3 cp s3://piotr.szczepanski/Dev-1/builds/Dev-1-landingPage.zip Dev-1-landingPage.zip
-rm index.html 
+rm index.html
 unzip Dev-1-landingPage.zip
 rm -fR Dev-1-landingPage.zip
 ```
 ## update user data script
 
-20. 
+20.
 -y => promptless command flag
 ```shell
 #!/bin/bash
@@ -198,7 +250,7 @@ rm -rf Dev-1-landingPage.zip Dev-1-landingPage
 sudo service httpd start
 ```
 
-## Lunch Dev-1 EC2 Application Server 1 from scratch 
+## Lunch Dev-1 EC2 Application Server 1 from scratch
 21. Add steps as before plus add a script in advanced setting - user data
 
 ## Check Services and daemons
@@ -206,9 +258,9 @@ service --status-all
 
 ## EC2 - Application Server 2 Setup
 22. To create App Server 2 use right-click > launch more like this
-Adjust name and subnet => change to 2nd availability 
+Adjust name and subnet => change to 2nd availability
 
-## 
+##
 https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html
 
 # Load Balancer Configuration
@@ -220,7 +272,7 @@ https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction
 ## Set up
 
 23. Load balancer type => select Application LB
-Network LP option = > select only for high-performance networks, static IPs etc.  
+Network LP option = > select only for high-performance networks, static IPs etc.
 
 Set name, internet facing, protocol http,select VPC,select avail. zones and related subnets:
 eu-west-2a      DMZ Subnet 1
@@ -229,33 +281,33 @@ eu-west-2b      DMZ Subnet 2
 Add tags: name, and environment
 24. Configure Security Groups => name and create new security group => leave default TCP 80 ; to be fine-tuned later
 25 Configure Routing and Health checks- name and create new target group
-leave 
+leave
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/ALB%20config.png)
 
 26. Register Targets
-Add two app servers: 
+Add two app servers:
 Dev-1 EC2 Application Server 1
 Dev-1 EC2 Application Server 2
 Review and create
 
-## Load balancer checks 
+## Load balancer checks
 
-All stats (latency, requests, health and more) can be obtained Load Balancer or target groups. 
+All stats (latency, requests, health and more) can be obtained Load Balancer or target groups.
 To access app servers via the App Load balancer, copy-paste into browser DNS A record (Load Balancer/ description tab)
 
-## Security Groups clean up 
-### Ensure app servers can access internet - unidirectional way - outbound only - needed when updating/ patching systems - access to external repositories, packages etc. 
-Ensure client interaction is restricted only to Load balancers level - DMZ zones in following way:  
+## Security Groups clean up
+### Ensure app servers can access internet - unidirectional way - outbound only - needed when updating/ patching systems - access to external repositories, packages etc.
+Ensure client interaction is restricted only to Load balancers level - DMZ zones in following way:
 
 - ensure only load balancers are facing incoming web traffic
 
-- ensure public subnet(app servers) can receive web traffic (port 80) from App Load balancers ONLY. 
-27. Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field. 
+- ensure public subnet(app servers) can receive web traffic (port 80) from App Load balancers ONLY.
+27. Amend Dev-1 Public SG (App servers SG) so it gets traffic from Dev-1-External-Application-Load-Balancer-SG by pasting ALB SG ID into source field.
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20public%20SG.png)
 
-- 28. ensure traffic from load balances - outbound - goes to app servers ONLY (not further to DB) - by pasting Dev-1 Public SG (Apps Servers SG) ID into App Load Balancers SG - outbound - destination field 
+- 28. ensure traffic from load balances - outbound - goes to app servers ONLY (not further to DB) - by pasting Dev-1 Public SG (Apps Servers SG) ID into App Load Balancers SG - outbound - destination field
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/adjust%20load%20balancer%20SG.png)
 
@@ -274,32 +326,32 @@ https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-sc
 
 Add default storage, tick delete on termination
 Select existing public security group for the EC2 app servers - Dev-1 Public SG
-Review, select the .pem file and proceed to 
+Review, select the .pem file and proceed to
 
 ## Create Auto Scaling Group
 
-30. 
+30.
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/AS%20group.png)
 
 Save and update as follows:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/update%20asg.png]
-Save the update and check 
+Save the update and check
 Verify whether the minimum 2 instances launched within correct 2 avail.zones.
 ensure Application LB A DNS record works (browser check)
 
 ## Create Scaling Policies, Cloudwatch alarms, Simple Notification Services - SNS
 
 31. Go to SNS and create 4 topics:
-Dev-1 Scale-up alarm 
-Dev-1 Scale down alarm 
-Dev-1-Service-Anomaly 
+Dev-1 Scale-up alarm
+Dev-1 Scale down alarm
+Dev-1-Service-Anomaly
 Dev-1-AutoScalingActivityAlarm
 
 32. EC2>Auto Scaling Target Groups Scaling Policies> Add policy> create simple Scale policy
 
-Create Scale UP policy 
+Create Scale UP policy
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/create%20scaling%20policy.png)
 
@@ -325,83 +377,83 @@ Create: Dev-1-Application-High-Average-Latency-Alarm
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/cloudWatchAlarm.png)
 
 Create: Dev-1-Application-High-Average-Latency-Alarm-Recovery-Notice
-Trigger it when latency is = < 3s 
+Trigger it when latency is = < 3s
 
-36. Add auto scaling actions to previously created Alarms. 
+36. Add auto scaling actions to previously created Alarms.
 
 Click on the specific alarm and open directly in CloudWatch/modify it:
 
 - Add Auto Scaling Action - Scale Up -(add one instance) - while the alarm is on - state: Alarm
 - Add Auto Scaling Action - Scale Down -(remove one instance) - while alarm recovery notice is on - State: Alarm
 
-37. Configuring SNS Topic Subscriptions 
+37. Configuring SNS Topic Subscriptions
 SNS/Topics/Subscribe to topic
 
 - Set Protocol to email
 - set endpoint to mail address
 
-Open the subscribed email and confirm the subscription. 
+Open the subscribed email and confirm the subscription.
 
-To test go to 
-Auto Scaling/Autoscaling Groups/Details Tab/ Edit 
+To test go to
+Auto Scaling/Autoscaling Groups/Details Tab/ Edit
 
 - temporarily change desired  from 2 to 3; save
 
 # Create and Configure MySql DB instance
 
-## Configure designated security group 
+## Configure designated security group
 
-38. Create a new security group 
+38. Create a new security group
 
-Ensure when opening ports - here 3306 (MySQL) that any traffic via this port is coming from (source) public subnet - in this architecture - app servers subnet (not from DMZ - internet facing zone). 
+Ensure when opening ports - here 3306 (MySQL) that any traffic via this port is coming from (source) public subnet - in this architecture - app servers subnet (not from DMZ - internet facing zone).
 
-Whenever additional ports are needed - set the source to public (app servers / non-internet facing) security group. 
+Whenever additional ports are needed - set the source to public (app servers / non-internet facing) security group.
 
 ## Setup RDS DB
 
 39. Create new subnet group:
-- go to RDS/Subnet groups 
+- go to RDS/Subnet groups
 
 Add two subnets -for 2 availability zones:
 
 ![alt text](https://github.com/szczepanski/cloud-aws/blob/master/dev-1-architecture/db%20subnet.png)
 
-## Configure RDS Instances 
+## Configure RDS Instances
 
-40. 
+40.
 go to RDS/Instances/ Launch
-pick DB type - here Amazon Aurora (MySql) and configure all required settings. 
+pick DB type - here Amazon Aurora (MySql) and configure all required settings.
 
 # DNS Management
 
 ## Configure Amazon Certificate Manager (Amazon Issued SSl certificate).
 
-SSL certificate needs to be assigned to load balancer by creating HTTPS listeners that forward the traffic to specific target groups. 
+SSL certificate needs to be assigned to load balancer by creating HTTPS listeners that forward the traffic to specific target groups.
 
-41. 
+41.
 Certificate Manager > request a certificate
 - add domain name
-- select validation method => email (AWS validation email message to be sent to the domain owner registered address). 
+- select validation method => email (AWS validation email message to be sent to the domain owner registered address).
 
 
-Once approved by the owner certificate will show as issued. 
+Once approved by the owner certificate will show as issued.
 
-## Configure Load Balancer HTTPS Load Balancer 
-42. 
-Load Balancing/ Load Balancers/ Listeners/ 
-add https port 443 
+## Configure Load Balancer HTTPS Load Balancer
+42.
+Load Balancing/ Load Balancers/ Listeners/
+add https port 443
 
 ## Setting up Route 53
 
 43. Go to Route 53/Create Hosted Zone
 
-provide domain name and type: hosted zone and create. 
+provide domain name and type: hosted zone and create.
 
-In order to have Route 53 managing the DNS, original (GoDaddy, 1&1, etc) nameservers entries need to be changed to the nameservers entries provided by AWS. 
+In order to have Route 53 managing the DNS, original (GoDaddy, 1&1, etc) nameservers entries need to be changed to the nameservers entries provided by AWS.
 
-Once this is done, entire DNS can be then managed from within Route 53. 
+Once this is done, entire DNS can be then managed from within Route 53.
 
-44. Create A record within Route 53 pointing to the Dev-1 Application Load Balancer (Simple route policy). 
+44. Create A record within Route 53 pointing to the Dev-1 Application Load Balancer (Simple route policy).
 45. Wait some time to test/resolve new A record (pointing to app LB)
 
 
@@ -414,18 +466,18 @@ Once this is done, entire DNS can be then managed from within Route 53.
 
 # Terraform
 
-Open source by hashicorp 
+Open source by hashicorp
 
-Use cases: - infrastructure version control and back up if prod config breaks; for multiple environments - minimization of config drift - consistency. 
+Use cases: - infrastructure version control and back up if prod config breaks; for multiple environments - minimization of config drift - consistency.
 
  3 Basic components:
-- config file.tf - written in hashicorp configuration language - HCL 
+- config file.tf - written in hashicorp configuration language - HCL
 - cli => terraform plan
 - cli => terraform apply
 
-Easy variable declaration 
-Good documentation. 
-Referencing files  => such as user data. 
+Easy variable declaration
+Good documentation.
+Referencing files  => such as user data.
 
 ### Setup IAM user:
 Create a new user in IAM with programmatic access:
@@ -434,7 +486,7 @@ dev-1-terraform-user
 add it to the group:
 dev-1-admin-programmatic-access
 
-### Install AWS cli and configure the profile  
+### Install AWS cli and configure the profile
 
 
 provider "aws" {
@@ -443,4 +495,4 @@ provider "aws" {
   profile                 = "customprofile"
 }
 
-## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto-scaling group/ set desired (instances) to 0. 
+## To avoid extra costs, stop or terminate instances and go to auto scaling/ auto-scaling group/ set desired (instances) to 0.
